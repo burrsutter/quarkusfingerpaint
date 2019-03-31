@@ -7,17 +7,20 @@
   </head>
   <body>
         <style>
-                .colorButton {
+                .styleButton {
                   font-size: 20pt;
                 }
         </style>      
-         
+        Finger Painting 
         <div id="container">
-            <canvas id="mainCanvas" width="400" height="400"
-                style="border: 2px solid rgb(84,84,84); cursor: pointer; background-color: rgb(255,255,255); background-position: initial initial; background-repeat: initial initial;">
-            Finger Painting
+            <canvas id="mainCanvas" width=400 height=400
+            style="border: 2px solid rgb(84,84,84); cursor: pointer; background-color: rgb(255,255,255); ">
+            <!--
+            background-position: initial initial; background-repeat: initial initial;">
+            -->
+
         </div>
-        <div id="tools" class="colorButton">
+        <div id="tools" class="styleButton">
             <a href="#" id="clearButton">Clear</a>
             <a href="#" id="blackButton">Black</a>
             <a href="#" id="redButton">Red</a>	
@@ -38,24 +41,26 @@
             myUUID = makeUUID();
             connect();        
             // Attach the canvas listeners
-		    mainCanvas.addEventListener("touchstart",beginStroke,false);
-		    mainCanvas.addEventListener("touchmove",drawStroke,false);
-		    mainCanvas.addEventListener("touchend",endStroke,false);
-		  
-		    mainCanvas.addEventListener("mousedown",beginStroke,false);
-		    mainCanvas.addEventListener("mousemove",drawStroke,false);
-		    mainCanvas.addEventListener("mouseup",endStroke,false);
-		  
-		    mainCanvas.addEventListener("mouseout",endStroke,false);	
+		        mainCanvas.addEventListener("touchstart",beginStroke,false);
+		        mainCanvas.addEventListener("touchmove",drawStroke,false);
+		        mainCanvas.addEventListener("touchend",endStroke,false);		  
+		        mainCanvas.addEventListener("mousedown",beginStroke,false);
+		        mainCanvas.addEventListener("mousemove",drawStroke,false);
+		        mainCanvas.addEventListener("mouseup",endStroke,false);		  
+		        mainCanvas.addEventListener("mouseout",endStroke,false);	
             
+            // adjust Canvas size
+            // mainCanvas.width = $(window).width() - 20;
+            // mainCanvas.height = 400;
+
             console.log("ready: " + myUUID);
 
         });
 
         var strokeColor = "#000000";
         var isDrawing = false;
-	    var ctx = mainCanvas.getContext('2d');
-	    ctx.lineWidth = 4;
+	      var ctx = mainCanvas.getContext('2d');
+	      ctx.lineWidth = 4;
 
         function beginStroke(event) {
 		    // debug(event);
