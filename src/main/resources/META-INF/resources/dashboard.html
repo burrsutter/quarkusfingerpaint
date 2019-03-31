@@ -22,27 +22,27 @@
         });    
 
         function findAddCanvas(id) {
-	        if (canvi.hasOwnProperty(id)) {
-	          console.log("FOUND Canvas for " + id);
-	          return canvi[id];
-	        } else {
-		        console.log("CREATING Canvas for " + id);
-	          var canvas = document.createElement('canvas');
-		        canvas.id = id;
-		        canvas.width = 90;
-		        canvas.height = 90;
-		        canvas.style.position = "relative";
-		        canvas.style.border = "1px solid";
-	          canvas.style.background = "white";
+          if (canvi.hasOwnProperty(id)) {
+            console.log("FOUND Canvas for " + id);
+            return canvi[id];
+          } else {
+            console.log("CREATING Canvas for " + id);
+            var canvas = document.createElement('canvas');
+            canvas.id = id;
+            canvas.width = 90;
+            canvas.height = 90;
+            canvas.style.position = "relative";
+            canvas.style.border = "1px solid";
+            canvas.style.background = "white";
 
-		        // var body = document.getElementsByTagName("body")[0];
+            // var body = document.getElementsByTagName("body")[0];
             var body = document.getElementById("mainBody");
-		        body.appendChild(canvas);
+            body.appendChild(canvas);
 
-	          canvi[id] = document.getElementById(id);
-		        console.log(canvi[id]);
-		        return canvi[id];
-	        }
+            canvi[id] = document.getElementById(id);
+            console.log(canvi[id]);
+            return canvi[id];
+          }
         } // findAddCanvas(id)
 
         function deserialize(data, canvas) {
@@ -73,7 +73,7 @@
                   // $("#mainBody").append(jsonMessage.data + "\n");
                   
                   theCanvas = findAddCanvas(jsonMessage.id);
-		              deserialize(jsonMessage.data, theCanvas );
+                  deserialize(jsonMessage.data, theCanvas );
             };
    
           }
