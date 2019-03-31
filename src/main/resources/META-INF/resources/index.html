@@ -14,8 +14,8 @@
         </style>      
         Finger Painting 
         <div id="container">
-            <canvas id="mainCanvas" width=400 height=400
-            style="border: 2px solid rgb(84,84,84); cursor: pointer; background-color: rgb(255,255,255); ">
+            <canvas id="mainCanvas" width=100% height=400
+            style="border: 1px solid rgb(84,84,84); cursor: pointer; background-color: rgb(255,255,255); ">
             <!--
             background-position: initial initial; background-repeat: initial initial;">
             -->
@@ -50,10 +50,6 @@
 		        mainCanvas.addEventListener("mouseup",endStroke,false);		  
 		        mainCanvas.addEventListener("mouseout",endStroke,false);	
             
-            // adjust Canvas size
-            // mainCanvas.width = $(window).width() - 20;
-            // mainCanvas.height = 400;
-
             console.log("ready: " + myUUID);
 
         });
@@ -64,36 +60,39 @@
 	      ctx.lineWidth = 4;
 
         function beginStroke(event) {
-		    // debug(event);
-		    isDrawing = true;
-		    ctx.beginPath();
-		    x = getX(event);
-		    y = getY(event);
-		    ctx.moveTo(x,y);
-		    // console.log("BEGIN at " + x + " " + y );
-		    event.preventDefault();
-    	}
+  		    // debug(event);
+  		    isDrawing = true;
+	  	    ctx.beginPath();
+		      x = getX(event);
+		      y = getY(event);
+		      ctx.moveTo(x,y);
+		      // console.log("BEGIN at " + x + " " + y );
+		      event.preventDefault();
+    	  }
+        
         function drawStroke(event) {
-    		if(isDrawing) {
-	    		x = getX(event);
-		    	y = getY(event);
-  			    ctx.lineTo(x,y);
-			    ctx.strokeStyle = strokeColor;
+      		if(isDrawing) {
+	      		x = getX(event);
+		      	y = getY(event);
+  		  	  ctx.lineTo(x,y);
+			      ctx.strokeStyle = strokeColor;
 		        ctx.stroke();
-			    // console.log("STROKE to " + x + " " + y);
-		    }
-		    event.preventDefault();
-	    }
+			      // console.log("STROKE to " + x + " " + y);
+		      }
+		      event.preventDefault();
+	      }
+        
         function endStroke(event) {
-    		if(isDrawing) {
-	        	ctx.stroke();
+      		if(isDrawing) {
+	          ctx.stroke();
 		        ctx.closePath();			    
 		        isDrawing = false;
 		        sendCanvas();
-                // console.log("SENT");
+            // console.log("SENT");
      	    }
-		    event.preventDefault();
+		      event.preventDefault();
         }	
+        
         // part of the stroke
         function getX(event) {
     		if(!event.targetTouches || typeof event.targetTouches[0] === "undefined") {
@@ -184,6 +183,10 @@
                 return b = Math.random() * 16, (a == 'y' ? b & 3 | 8 : b | 0).toString(16);
             });
         }
+
+        const el = document.getElementById('mainCanvas')
+
+        el.style.height = el.offsetWidth
       </script>
   </body>
 </html>  
