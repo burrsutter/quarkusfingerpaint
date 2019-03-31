@@ -50,9 +50,11 @@
             img.onload = function() {
               // canvas.width = img.width;
               // canvas.height = img.height;
-              canvas.getContext("2d").drawImage(img, 0, 0, img.width * 0.25, img.height * 0.25 );
+              // canvas.getContext("2d").drawImage(img, 0, 0, img.width * 0.25, img.height * 0.25 );              
+              canvas.getContext("2d").drawImage(img, 0, 0, img.width, img.height, 0, 0, canvas.width, canvas.height );  
             };
             img.src = data;
+
         } // deserialize
 
 
