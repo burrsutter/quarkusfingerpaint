@@ -1,10 +1,13 @@
 <html>
 <head>
   <title>Everybody</title>
+  <link rel="shortcut icon" href="">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  
   <meta charset="utf-8"/>
 </head>
 <body>
+  
     <div id="mainBody">
         <!-- a canvas per connected user appears here -->
     </div>
@@ -29,8 +32,8 @@
             console.log("CREATING Canvas for " + id);
             var canvas = document.createElement('canvas');
             canvas.id = id;
-            canvas.width = 216;
-            canvas.height = 216;
+            canvas.width = 108;
+            canvas.height = 108;
             canvas.style.position = "relative";
             canvas.style.border = "1px solid";
             canvas.style.background = "white";
@@ -85,6 +88,8 @@
             });
         }
 
+        
     </script>
+    <script src="bubbleCursor.js"></script>
 </body>
 </html>
