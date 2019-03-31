@@ -1,0 +1,88 @@
+<html>
+<head>
+  <title>Everybody</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <meta charset="utf-8"/>
+</head>
+<body>
+    <div id="mainBody">
+        <!-- a canvas per connected user appears here -->
+    </div>
+        
+    <script type="text/javascript">
+        var connected = false;
+        var socket;    
+        // the dashboard is a unique client type
+        var adminID = "DASHBOARD:" + makeUUID();
+        var canvi = {}; // the "array" of Canvas objects, one per unique message.id (sent by the client)
+
+        $( document ).ready(function() {
+            // connect to websocket            
+            connect();
+        });    
+
+        function findAddCanvas(id) {
+	        if (canvi.hasOwnProperty(id)) {
+	            console.log("FOUND Canvas for " + id);
+	            return canvi[id];
+	        } else {
+		        console.log("CREATING Canvas for " + id);
+	            var canvas = document.createElement('canvas');
+		        canvas.id = id;
+		        canvas.width = 100;
+		        canvas.height = 100;
+		        canvas.style.position = "relative";
+		        canvas.style.border = "1px solid";
+	            canvas.style.background = "white";
+
+		        // var body = document.getElementsByTagName("body")[0];
+            	var body = document.getElementById("mainBody");
+		        body.appendChild(canvas);
+
+	            canvi[id] = document.getElementById(id);
+		        console.log(canvi[id]);
+		        return canvi[id];
+	        }
+        } // findAddCanvas(id)
+
+        function deserialize(data, canvas) {
+            var img = new Image();
+            img.onload = function() {
+                // canvas.width = img.width;
+                // canvas.height = img.height;
+                canvas.getContext("2d").drawImage(img, 0, 0, img.width * 0.25, img.height * 0.25 );
+            };
+            img.src = data;
+        } // deserialize
+
+
+        // Handle Websocket Connection
+        var connect = function() {
+          if (! connected) {
+            socket = new WebSocket("ws://" + location.host + "/paint/" + adminID);
+            socket.onopen = function() {
+                  connected = true;
+                  console.log("Connected to the web socket");
+            };
+            socket.onmessage = function(message) {
+                  // console.log(message.data);
+                  var jsonMessage = JSON.parse(message.data);
+                  // console.log("Got message: " + jsonMessage.data);
+                  // $("#mainBody").append(jsonMessage.data + "\n");
+                  
+                  theCanvas = findAddCanvas(jsonMessage.id);
+		          deserialize(jsonMessage.data, theCanvas );
+            };
+   
+          }
+        }
+
+        function makeUUID() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (a, b) {
+                return b = Math.random() * 16, (a == 'y' ? b & 3 | 8 : b | 0).toString(16);
+            });
+        }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<html>
+  <head>
+      <title>Finger Painting</title>
+      <link rel="shortcut icon" href="">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+      <meta charset="utf-8"/>
+  </head>
+  <body>
+        <style>
+                .colorButton {
+                  font-size: 20pt;
+                }
+        </style>      
+         
+        <div id="container">
+            <canvas id="mainCanvas" width="400" height="400"
+                style="border: 2px solid rgb(84,84,84); cursor: pointer; background-color: rgb(255,255,255); background-position: initial initial; background-repeat: initial initial;">
+            Finger Painting
+        </div>
+        <div id="tools" class="colorButton">
+            <a href="#" id="clearButton">Clear</a>
+            <a href="#" id="blackButton">Black</a>
+            <a href="#" id="redButton">Red</a>	
+            <a href="#" id="blueButton">Blue</a>
+            <a href="#" id="greenButton">Green</a>
+            <a href="#" id="orangeButton">Orange</a>	
+        </div>
+         
+        <br/>
+               
+        <script type="text/javascript">
+        var connected = false;
+        var socket;
+        var myUUID = null;
+  
+        $( document ).ready(function() {
+            // connect to websocket
+            myUUID = makeUUID();
+            connect();        
+            // Attach the canvas listeners
+		    mainCanvas.addEventListener("touchstart",beginStroke,false);
+		    mainCanvas.addEventListener("touchmove",drawStroke,false);
+		    mainCanvas.addEventListener("touchend",endStroke,false);
+		  
+		    mainCanvas.addEventListener("mousedown",beginStroke,false);
+		    mainCanvas.addEventListener("mousemove",drawStroke,false);
+		    mainCanvas.addEventListener("mouseup",endStroke,false);
+		  
+		    mainCanvas.addEventListener("mouseout",endStroke,false);	
+            
+            console.log("ready: " + myUUID);
+
+        });
+
+        var strokeColor = "#000000";
+        var isDrawing = false;
+	    var ctx = mainCanvas.getContext('2d');
+	    ctx.lineWidth = 4;
+
+        function beginStroke(event) {
+		    // debug(event);
+		    isDrawing = true;
+		    ctx.beginPath();
+		    x = getX(event);
+		    y = getY(event);
+		    ctx.moveTo(x,y);
+		    // console.log("BEGIN at " + x + " " + y );
+		    event.preventDefault();
+    	}
+        function drawStroke(event) {
+    		if(isDrawing) {
+	    		x = getX(event);
+		    	y = getY(event);
+  			    ctx.lineTo(x,y);
+			    ctx.strokeStyle = strokeColor;
+		        ctx.stroke();
+			    // console.log("STROKE to " + x + " " + y);
+		    }
+		    event.preventDefault();
+	    }
+        function endStroke(event) {
+    		if(isDrawing) {
+	        	ctx.stroke();
+		        ctx.closePath();			    
+		        isDrawing = false;
+		        sendCanvas();
+                // console.log("SENT");
+     	    }
+		    event.preventDefault();
+        }	
+        // part of the stroke
+        function getX(event) {
+    		if(!event.targetTouches || typeof event.targetTouches[0] === "undefined") {
+	    		return event.layerX;
+	    	}
+		    else {
+			    return event.targetTouches[0].pageX;			
+		    }
+	    }
+        // part of the stroke
+	    function getY(event) {
+		    if(!event.targetTouches || typeof event.targetTouches[0] === "undefined") {
+			    return event.layerY;
+		    }
+		    else {
+			    return event.targetTouches[0].pageY;
+		    }
+	    }	
+        // Handle Websocket Connection
+        var connect = function() {
+          if (! connected) {
+            socket = new WebSocket("ws://" + location.host + "/paint/" + myUUID);
+            socket.onopen = function() {
+                  connected = true;
+                  console.log("Connected to the web socket");
+            };                  
+          }
+        }
+
+        // Send the canvas via websocket
+        function sendCanvas() {
+	        var msg = {
+		    	'id' : myUUID,
+			    'data': mainCanvas.toDataURL("image/png")
+	        }
+	        msgAsString = JSON.stringify(msg);
+	        // console.log("CANVAS: " + msgAsString);
+            socket.send(msgAsString); 
+    	}
+
+        // the bottom buttons
+        $('#clearButton').click(function(e) {
+		    e.preventDefault();
+		    console.log("Clear Clicked");
+            ctx.beginPath();
+		    ctx.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+            ctx.fillStyle = "#FFFFFF";
+            ctx.fillRect( 0, 0, mainCanvas.width, mainCanvas.height );
+            ctx.closePath();
+		    sendCanvas();
+	     }); // clearButton
+	
+        $('#blackButton').click(function(e) {
+		    e.preventDefault();
+		    console.log("Black Clicked");
+		    strokeColor = "#000000";
+	     });
+
+        $('#redButton').click(function(e) {
+	        e.preventDefault();
+		    console.log("Red Clicked");
+	        strokeColor = "#FE0001";
+	     });
+
+        $('#blueButton').click(function(e) {
+		    e.preventDefault();
+		    console.log("Blue Clicked");
+		    strokeColor = "#0000FF";
+	    });
+
+        $('#greenButton').click(function(e) {
+		    e.preventDefault();
+            console.log("Green Clicked");
+		    strokeColor = "#00FF00";
+	    });
+
+        $('#orangeButton').click(function(e) {
+		    e.preventDefault();
+		    console.log("Orange Clicked");
+		    strokeColor = "#FFA500";
+	    });
+
+
+        // copied from vertx-eventbus
+        // I need just enough randomness to make different human's phones unique
+        function makeUUID() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (a, b) {
+                return b = Math.random() * 16, (a == 'y' ? b & 3 | 8 : b | 0).toString(16);
+            });
+        }
+      </script>
+  </body>
+</html>  
