@@ -1,0 +1,1 @@
+scp target/quarkusfingerpaint-1.0.0-runner ec2-user@web.burr.red:/home/ec2-user/quarkus
