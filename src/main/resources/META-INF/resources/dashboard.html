@@ -77,10 +77,19 @@
                   
                   theCanvas = findAddCanvas(jsonMessage.id);
                   deserialize(jsonMessage.data, theCanvas );
-            };
+
+                  // send the user a smile
+                  theCanvas.addEventListener('click', function() {             
+                    console.log(this.id);
+                    // prompt("Smile", this.id);
+                    drawSmile(document.getElementById(this.id));              
+                  }, true);
+
+            }; // socket.onmessage
    
           }
         }
+
 
         function makeUUID() {
             return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (a, b) {
@@ -91,5 +100,6 @@
         
     </script>
     <script src="bubbleCursor.js"></script>
+    <script src="drawSmile.js"></script>
 </body>
 </html>
